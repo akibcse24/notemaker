@@ -2,6 +2,7 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { TextStyle } from '@tiptap/extension-text-style';
 import { MathBlock, MathInline } from './extensions/MathExtension';
+import { DiagramExtension } from './extensions/DiagramExtension';
 import React, { useEffect } from 'react';
 import { Bold, Italic, List, Heading1, Heading2 } from 'lucide-react';
 
@@ -18,6 +19,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({ content, onChange, e
       TextStyle,
       MathBlock,
       MathInline,
+      DiagramExtension,
     ],
     content: content,
     onUpdate: ({ editor }) => {

@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { dbService } from '../services/db';
 import type { Note } from '../types';
 import { TiptapEditor } from '../components/editor/TiptapEditor';
-import { SvgPreview } from '../components/editor/SvgPreview';
 import { Button } from '../components/Button';
 import { Save, ArrowLeft, Image as ImageIcon } from 'lucide-react';
 
@@ -72,14 +71,13 @@ export const NoteEditor: React.FC = () => {
       </header>
 
       {/* Editor Layout */}
-      <div className="flex-1 overflow-hidden p-4 gap-4 flex flex-col lg:flex-row">
-        {/* Left: Text Editor */}
-        <div className="flex-1 min-h-[50%] lg:h-full flex flex-col gap-2">
+      <div className="flex-1 overflow-hidden p-4 flex justify-center">
+        <div className="w-full max-w-4xl h-full flex flex-col gap-2">
             <div className="flex justify-between items-center px-1">
-                <span className="text-sm font-semibold text-slate-500">Enhanced Notes</span>
+                <span className="text-sm font-semibold text-slate-500">Note Content</span>
                 {note.original_image_url && (
                     <a href={note.original_image_url} target="_blank" rel="noreferrer" className="text-xs flex items-center gap-1 text-indigo-600 hover:underline">
-                        <ImageIcon size={12} /> View Original
+                        <ImageIcon size={12} /> View Original Image
                     </a>
                 )}
             </div>
@@ -90,18 +88,6 @@ export const NoteEditor: React.FC = () => {
                     setDirty(true);
                 }}
             />
-        </div>
-
-        {/* Right: SVG / Diagram */}
-        <div className="flex-1 min-h-[50%] lg:h-full flex flex-col gap-2">
-            <span className="text-sm font-semibold text-slate-500 px-1">Visuals</span>
-            {note.svg_code ? (
-                <SvgPreview svgCode={note.svg_code} />
-            ) : (
-                <div className="h-full border border-slate-200 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 text-sm italic">
-                    No diagrams generated
-                </div>
-            )}
         </div>
       </div>
     </div>

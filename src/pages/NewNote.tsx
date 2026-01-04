@@ -45,11 +45,21 @@ export const NewNote: React.FC = () => {
 
       // 3. Save initial draft
       console.log('Saving note to DB...');
-      const htmlContent = await markdownToHtml(aiResult.markdown);
+      let htmlContent = await markdownToHtml(aiResult.markdown);
+
+      // Append Diagram if exists
+      if (aiResult.svg) {
+         // We escape double quotes to avoid breaking the attribute.
+         // A simpler way for massive code is to store it safely, but for now we put it in 'code' attribute.
+         // We need to be careful with escaping.
+         const escapedSvg = aiResult.svg.replace(/"/g, '&quot;');
+         htmlContent += `<diagram-block code="${escapedSvg}"></diagram-block>`;
+      }
+
       const savedNote = await dbService.saveNote({
         title: "New Scanned Note",
         content: htmlContent,
-        svg_code: aiResult.svg,
+        svg_code: aiResult.svg, // Keep storing it separately just in case
         original_image_url: imageUrl,
       });
       console.log('Note saved:', savedNote);
