@@ -28,9 +28,10 @@ class AIService implements IAIService {
       const prompt = `
         Analyze this handwritten note.
         1. Transcribe the text and summarize it nicely in Markdown.
-        2. If there are any diagrams, drawings, or figures, generate valid SVG code for them.
-        3. Return ONLY a JSON object with keys: "markdown" and "svg" (optional).
-        4. Do not wrap the JSON in markdown code blocks.
+        2. Use LaTeX notation for ALL mathematical equations, formulas, and symbols (e.g., $E=mc^2$, $\\frac{1}{2}$).
+        3. If there are any diagrams, drawings, or figures, generate valid SVG code for them.
+        4. Return ONLY a JSON object with keys: "markdown" and "svg" (optional).
+        5. Do not wrap the JSON in markdown code blocks.
       `;
 
       const result = await this.model.generateContent([prompt, base64Data]);
@@ -62,23 +63,23 @@ class AIService implements IAIService {
       setTimeout(() => {
         resolve({
           markdown: `
-# Lecture: The Solar System
+# Lecture: Quadratic Equations
 
-*   **Sun**: The center of our system. Huge ball of plasma.
-*   **Planets**:
-    1.  Mercury
-    2.  Venus
-    3.  Earth (Home!)
-    4.  Mars
+The general form of a quadratic equation is:
+$$ax^2 + bx + c = 0$$
 
-## Key Concepts
-*   Gravity holds it together.
-*   Orbits are elliptical.
+To find the roots, we use the quadratic formula:
+$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
+
+## Example
+If $a=1, b=-3, c=2$:
+$$x = \\frac{3 \\pm \\sqrt{(-3)^2 - 4(1)(2)}}{2(1)} = \\frac{3 \\pm 1}{2}$$
+Roots are $x=2$ and $x=1$.
           `,
           svg: `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="100" cy="100" r="50" fill="yellow" stroke="orange" stroke-width="5" />
-  <circle cx="140" cy="100" r="10" fill="blue" />
-  <path d="M 60 100 A 40 40 0 0 1 140 100 A 40 40 0 0 1 60 100" fill="none" stroke="gray" stroke-dasharray="5,5" />
+  <path d="M 20 180 Q 100 20 180 180" fill="none" stroke="blue" stroke-width="2" />
+  <line x1="10" y1="180" x2="190" y2="180" stroke="black" />
+  <line x1="100" y1="10" x2="100" y2="190" stroke="black" />
 </svg>`
         });
       }, 2000);

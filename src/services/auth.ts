@@ -22,20 +22,23 @@ class AuthService implements IAuthService {
   }
 
   async login(): Promise<User> {
+    // Force Mock Auth in Dev/Sandbox to prevent popup blocking issues in headless environments
+    if (import.meta.env.DEV) {
+        console.warn("Using Mock Auth (Forced for Dev/Testing)");
+        const mockUser = { id: 'mock-user', email: 'demo@example.com', name: 'Demo User' };
+        this.user = mockUser;
+        localStorage.setItem('user', JSON.stringify(mockUser));
+        return mockUser;
+    }
+
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = this.mapUser(result.user);
       if (!user) throw new Error('Login failed');
+      localStorage.setItem('user', JSON.stringify(user));
       return user;
     } catch (error) {
       console.error("Firebase Login Error:", error);
-      // Fallback for Dev/Sandbox environment where popup might be blocked
-      if (import.meta.env.DEV) {
-          console.warn("Using Mock Auth Fallback due to error");
-          const mockUser = { id: 'mock-user', email: 'demo@example.com', name: 'Demo User' };
-          this.user = mockUser;
-          return mockUser;
-      }
       throw error;
     }
   }
@@ -43,6 +46,7 @@ class AuthService implements IAuthService {
   async logout(): Promise<void> {
     await signOut(auth);
     this.user = null;
+    localStorage.removeItem('user');
   }
 
   async getUser(): Promise<User | null> {

@@ -1,6 +1,7 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { TextStyle } from '@tiptap/extension-text-style';
+import { MathBlock, MathInline } from './extensions/MathExtension';
 import React, { useEffect } from 'react';
 import { Bold, Italic, List, Heading1, Heading2 } from 'lucide-react';
 
@@ -15,6 +16,8 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({ content, onChange, e
     extensions: [
       StarterKit,
       TextStyle,
+      MathBlock,
+      MathInline,
     ],
     content: content,
     onUpdate: ({ editor }) => {

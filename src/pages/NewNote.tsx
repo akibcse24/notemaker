@@ -6,6 +6,7 @@ import { Button } from '../components/Button';
 import { storageService } from '../services/storage';
 import { aiService } from '../services/ai';
 import { dbService } from '../services/db';
+import { markdownToHtml } from '../lib/markdown';
 import { Sparkles, X } from 'lucide-react';
 
 export const NewNote: React.FC = () => {
@@ -31,25 +32,34 @@ export const NewNote: React.FC = () => {
     setProcessing(true);
 
     try {
+      console.log('Starting processNote...');
       // 1. Upload Image (Mock or Real)
+      console.log('Uploading image...');
       const imageUrl = await storageService.uploadImage(file);
+      console.log('Image uploaded:', imageUrl);
 
       // 2. Process with AI
+      console.log('Processing with AI...');
       const aiResult = await aiService.processImage(preview); // Use preview/blob for AI for now if URL not public
+      console.log('AI result:', aiResult);
 
       // 3. Save initial draft
+      console.log('Saving note to DB...');
+      const htmlContent = await markdownToHtml(aiResult.markdown);
       const savedNote = await dbService.saveNote({
         title: "New Scanned Note",
-        content: aiResult.markdown,
+        content: htmlContent,
         svg_code: aiResult.svg,
         original_image_url: imageUrl,
       });
+      console.log('Note saved:', savedNote);
 
       // 4. Redirect to Editor
+      console.log('Navigating to:', `/note/${savedNote.id}`);
       navigate(`/note/${savedNote.id}`);
 
     } catch (error) {
-      console.error(error);
+      console.error('Error in processNote:', error);
       alert("Failed to process note. Please try again.");
     } finally {
       setProcessing(false);
