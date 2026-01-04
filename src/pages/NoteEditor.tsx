@@ -4,7 +4,7 @@ import { dbService } from '../services/db';
 import type { Note } from '../types';
 import { TiptapEditor } from '../components/editor/TiptapEditor';
 import { Button } from '../components/Button';
-import { Save, ArrowLeft, Image as ImageIcon } from 'lucide-react';
+import { Save, ArrowLeft, Image as ImageIcon, Printer, Volume2 } from 'lucide-react';
 
 export const NoteEditor: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -41,6 +41,18 @@ export const NoteEditor: React.FC = () => {
     }
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleReadAloud = () => {
+      if (!note) return;
+      // Strip HTML for speech
+      const text = note.content.replace(/<[^>]+>/g, ' ');
+      const utterance = new SpeechSynthesisUtterance(text);
+      window.speechSynthesis.speak(utterance);
+  };
+
   if (loading) return <div className="p-8 text-center">Loading editor...</div>;
   if (!note) return <div className="p-8 text-center">Note not found</div>;
 
@@ -62,7 +74,14 @@ export const NoteEditor: React.FC = () => {
             placeholder="Note Title"
           />
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 no-print">
+            <button onClick={handleReadAloud} className="p-2 text-slate-500 hover:text-indigo-600 transition-colors" title="Read Aloud">
+               <Volume2 size={20} />
+            </button>
+            <button onClick={handlePrint} className="p-2 text-slate-500 hover:text-indigo-600 transition-colors" title="Print / Save as PDF">
+               <Printer size={20} />
+            </button>
+            <div className="w-px h-6 bg-slate-200 mx-1"></div>
             {dirty && <span className="text-xs text-amber-600 font-medium">Unsaved changes</span>}
             <Button size="sm" onClick={handleSave} isLoading={saving} disabled={!dirty}>
                 <Save className="w-4 h-4 mr-2" /> Save

@@ -49,11 +49,9 @@ export const NewNote: React.FC = () => {
 
       // Append Diagram if exists
       if (aiResult.svg) {
-         // We escape double quotes to avoid breaking the attribute.
-         // A simpler way for massive code is to store it safely, but for now we put it in 'code' attribute.
-         // We need to be careful with escaping.
-         const escapedSvg = aiResult.svg.replace(/"/g, '&quot;');
-         htmlContent += `<diagram-block code="${escapedSvg}"></diagram-block>`;
+         // Encode SVG to Base64 to prevent any HTML parsing issues with special characters in attributes
+         const base64Svg = btoa(aiResult.svg);
+         htmlContent += `<diagram-block code="${base64Svg}"></diagram-block>`;
       }
 
       const savedNote = await dbService.saveNote({
